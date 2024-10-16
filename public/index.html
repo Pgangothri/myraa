@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-bottom: 20px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+    }
+    .blog-output {
+      margin-top: 30px;
+      background-color: #f4f4f4;
+      padding: 20px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Generate a Blog</h1>
+    <form id="blogForm">
+      <label for="prompt">Enter a blog prompt:</label>
+      <textarea id="prompt" name="prompt" required></textarea>
+      <button type="submit">Generate Blog</button>
+    </form>
+    <div id="blogOutput" class="blog-output" style="display: none;">
+      <h2>Your Generated Blog</h2>
+      <div id="generatedBlog"></div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('blogForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const prompt = document.getElementById('prompt').value;
+      const blogOutput = document.getElementById('blogOutput');
+      const generatedBlog = document.getElementById('generatedBlog');
+
+      // Display loading message
+      blogOutput.style.display = 'block';
+      generatedBlog.innerHTML = 'Generating blog...';
+
+      // Send the prompt to the backend API
+      const response = await fetch('/generate-blog', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ prompt: prompt })
+      });
+      const data = await response.json();
+      if (data.success) {
+        generatedBlog.innerHTML = data.blog;
+      } else {
+        generatedBlog.innerHTML = 'Error generating blog. Please try again.';
+      }
+    });
+  </script>
+</body>
+</html>
